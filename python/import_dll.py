@@ -17,8 +17,8 @@ def rand_vec2(rect: Rect):
         y=random.random() * rect.h + rect.y
     )
 
-n_points = 1000000
-n_iter = 10
+n_points = 1000
+n_iter = 1000
 
 with benchmark_context(f"Generation de {n_points} points en python"):
     points = [rand_vec2(rect) for i in range(n_points)]
@@ -31,18 +31,18 @@ with benchmark_context(f"{n_iter} Calculs de la profondeur"):
     for i in range(n_iter):
         quadtree.depth()
 
-with benchmark_context(f"{n_iter} Calcul du nombre total de points"):
+with benchmark_context(f"{n_iter} Calculs du nombre total de points"):
     for i in range(n_iter):
         quadtree.depth()
 
-with benchmark_context(f"{n_points} Calculs du point le plus proche avec la méthode naive"):
+with benchmark_context(f"{n_points} Recherches du point le plus proche avec la méthode naive"):
     for point in points:
-        quadtree.naive_closest(point, radius=1)
+        quadtree.naive_closest(point, radius=6)
 
-with benchmark_context(f"{n_points} Calculs du point le plus proche avec la méthode en largeur"):
+with benchmark_context(f"{n_points} Recherches du point le plus proche avec la méthode en largeur"):
     for point in points:
         breadth_closest = quadtree.closest(point)
 
-with benchmark_context(f"{n_points} Calculs du point le plus proche avec la méthode en profondeur"):
+with benchmark_context(f"{n_points} Recherches du point le plus proche avec la méthode en profondeur"):
     for point in points:
         depth_closest = quadtree.closest_depth(point)
