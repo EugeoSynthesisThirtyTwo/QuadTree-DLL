@@ -147,8 +147,8 @@ class QuadTreeCpp:
         
         return None
     
-    def closest_depth(self, point: Vec2, not_equal: bool = True) -> Vec2 | None:
-        optional = self._dll.QTclosestDepth(self._quadTree, point, not_equal)
+    def closest_depth(self, point: Vec2, exclude_point: bool = True) -> Vec2 | None:
+        optional = self._dll.QTclosestDepth(self._quadTree, point, exclude_point)
 
         if optional.has_value:
             return optional.value

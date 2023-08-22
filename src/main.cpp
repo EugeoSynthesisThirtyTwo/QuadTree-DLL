@@ -17,7 +17,7 @@ extern "C"
 {
     DLL_EXPORT CArrayVec2 vectorVec2ToArray(void* vector)
     {
-        std::vector<Vec2>* vec = static_cast<std::vector<Vec2>*>(vector);
+        BetterVector<Vec2>* vec = static_cast<BetterVector<Vec2>*>(vector);
         return CArrayVec2
         {
             vec->data(),
@@ -27,7 +27,7 @@ extern "C"
 
     DLL_EXPORT void freeVectorVec2(void* vector)
     {
-        std::vector<Vec2>* vec = static_cast<std::vector<Vec2>*>(vector);
+        BetterVector<Vec2>* vec = static_cast<BetterVector<Vec2>*>(vector);
         delete vec;
     }
     
@@ -114,10 +114,10 @@ extern "C"
         return result;
     }
 
-    DLL_EXPORT OptionalVec2 QTclosestDepth(const void* quadTree, Vec2 point, bool notEquals)
+    DLL_EXPORT OptionalVec2 QTclosestDepth(const void* quadTree, Vec2 point, bool excludePoint)
     {
         const QuadTree* qt = static_cast<const QuadTree*>(quadTree);
-        std::optional<Vec2> closest = qt->closestDepth(point, notEquals);
+        std::optional<Vec2> closest = qt->closestDepth(point, excludePoint);
         OptionalVec2 result = {closest.has_value(), Vec2()};
 
         if (result.has_value)
@@ -129,7 +129,7 @@ extern "C"
     DLL_EXPORT void* QTqueryRect(void* quadTree, Rect rect)
     {
         QuadTree* qt = static_cast<QuadTree*>(quadTree);
-        std::vector<Vec2>* buffer = new std::vector<Vec2>();
+        BetterVector<Vec2>* buffer = new BetterVector<Vec2>();
         qt->queryRect(rect, *buffer);
         return buffer;
     }
@@ -137,7 +137,7 @@ extern "C"
     DLL_EXPORT void* QTqueryCircle(const void* quadTree, Vec2 center, float radius)
     {
         const QuadTree* qt = static_cast<const QuadTree*>(quadTree);
-        std::vector<Vec2>* buffer = new std::vector<Vec2>();
+        BetterVector<Vec2>* buffer = new BetterVector<Vec2>();
         qt->queryCircle(center, radius, *buffer);
         return buffer;
     }

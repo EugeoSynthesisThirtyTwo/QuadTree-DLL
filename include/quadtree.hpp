@@ -2,12 +2,12 @@
 
 #include "vec2.hpp"
 #include "rect.hpp"
+#include "better_vector.hpp"
 
 /*
     TODO remove empty
     TODO remove representative
     TODO dans ma méthode du closest, chercher récursivement en priorité dans les sous régions les plus proche du point
-    TODO mettre des BetterVector
     TODO essayer la disjonction de grégoire
     TODO corriger la méthode en largeur de grégoire
     TODO partager des objets python
@@ -22,11 +22,11 @@ private:
     const int capacity;
     bool divided;
 
-    std::vector<Vec2> points;
+    BetterVector<Vec2> points;
     std::optional<Vec2> representative;
 
     bool empty;
-    std::vector<QuadTree*> childs;
+    BetterVector<QuadTree*> childs;
 
 public:
     QuadTree(Rect rect, int capacity = QuadTree::MAX_CAPACITY);
@@ -98,24 +98,24 @@ private:
         Return the closest distance to the given point.
         Depth search algorithm.
     */
-    float closestDepth(Vec2 point, std::optional<Vec2>& bestPoint, bool notEquals, float bestDist = -1) const;
+    float closestDepth(Vec2 point, std::optional<Vec2>& bestPoint, bool excludePoint, float bestDist = -1) const;
 
 public:
     /*
         Return the closest point to the given point.
         Depth search algorithm.
     */
-    std::optional<Vec2> closestDepth(Vec2 point, bool notEquals = false) const;
+    std::optional<Vec2> closestDepth(Vec2 point, bool excludePoint = true) const;
 
     /*
         Append in buffer all points in the given rectangle.
     */
-    void queryRect(Rect rect, std::vector<Vec2>& buffer) const;
+    void queryRect(Rect rect, BetterVector<Vec2>& buffer) const;
 
     /*
         Append in buffer all points in the given circle.
     */
-    void queryCircle(Vec2 center, float radius, std::vector<Vec2>& buffer) const;
+    void queryCircle(Vec2 center, float radius, BetterVector<Vec2>& buffer) const;
     
     /*
         Return true if the given circle intersects this quadtree.

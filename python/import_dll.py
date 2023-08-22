@@ -17,8 +17,8 @@ def rand_vec2(rect: Rect):
         y=random.random() * rect.h + rect.y
     )
 
-n_points = 1000
-n_iter = 1000
+n_points = 1000000
+n_iter = 10
 
 with benchmark_context(f"Generation de {n_points} points en python"):
     points = [rand_vec2(rect) for i in range(n_points)]
@@ -37,7 +37,7 @@ with benchmark_context(f"{n_iter} Calcul du nombre total de points"):
 
 with benchmark_context(f"{n_points} Calculs du point le plus proche avec la méthode naive"):
     for point in points:
-        quadtree.naive_closest(point, radius=6)
+        quadtree.naive_closest(point, radius=1)
 
 with benchmark_context(f"{n_points} Calculs du point le plus proche avec la méthode en largeur"):
     for point in points:

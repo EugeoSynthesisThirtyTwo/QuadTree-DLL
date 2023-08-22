@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "quadtree.hpp"
 
 const int QuadTree::MAX_CAPACITY = 4;
@@ -169,8 +171,8 @@ void QuadTree::suppress(Vec2 point)
     }
     else
     {
-        std::vector<Vec2>::iterator iter = points.begin();
-        std::vector<Vec2>::iterator end = points.end();
+        BetterVector<Vec2>::iterator iter = points.begin();
+        BetterVector<Vec2>::iterator end = points.end();
         
         while (iter != end)
         {
@@ -194,7 +196,7 @@ void QuadTree::suppress(Vec2 point)
 
 std::optional<Vec2> QuadTree::naiveClosest(Vec2 point, float radius) const
 {
-    std::vector<Vec2> candidates;
+    BetterVector<Vec2> candidates;
     queryCircle(point, radius, candidates);
     return point.closest(candidates, true);
 }
@@ -215,10 +217,10 @@ std::optional<Vec2> QuadTree::closest(Vec2 point)
         return point.closest(points, {});
     }
     
-    std::vector<QuadTree*> sqrs;
+    BetterVector<QuadTree*> sqrs;
     sqrs.push_back(this);
-    std::vector<QuadTree*> newSqrs;
-    std::vector<Vec2> representatives;
+    BetterVector<QuadTree*> newSqrs;
+    BetterVector<Vec2> representatives;
     std::optional<Vec2> best;
 
     while (sqrs.size() != 0)
@@ -272,23 +274,39 @@ std::optional<Vec2> QuadTree::closest(Vec2 point)
     Return the closest distance to the given point.
     Depth search algorithm.
 */
-float QuadTree::closestDepth(Vec2 point, std::optional<Vec2>& bestPoint, bool notEquals, float bestDist) const
+float QuadTree::closestDepth(Vec2 point, std::optional<Vec2>& bestPoint, bool excludePoint, float bestDist) const
 {
     if (divided)
     {
+        BetterVector<std::pair<const QuadTree*, float>> quadDists;
+        quadDists.reserve(childs.size());
+
         for (const QuadTree* child : childs)
         {
-            float d = child->rect.distSquared(point);
+            float dist = child->rect.distSquared(point);
+            quadDists.emplace_back(child, dist);
+        }
 
-            if (d < bestDist || bestDist < 0)
-                bestDist = child->closestDepth(point, bestPoint, notEquals, bestDist);
+        std::sort(quadDists.begin(), quadDists.end(),
+            [](std::pair<const QuadTree*, float> a, std::pair<const QuadTree*, float> b) {
+                return a.second < b.second;
+            }
+        );
+
+        for (std::pair<const QuadTree*, float> pair : quadDists)
+        {
+            const QuadTree* child = pair.first;
+            float dist = pair.second;
+
+            if (dist < bestDist || bestDist < 0)
+                bestDist = child->closestDepth(point, bestPoint, excludePoint, bestDist);
         }
     }
     else
     {
         for (Vec2 other : points)
         {
-            if (notEquals && other == point)
+            if (excludePoint && other == point)
                 continue;
             
             float d = point.distSquared(other);
@@ -308,17 +326,17 @@ float QuadTree::closestDepth(Vec2 point, std::optional<Vec2>& bestPoint, bool no
     Return the closest point to the given point.
     Depth search algorithm.
 */
-std::optional<Vec2> QuadTree::closestDepth(Vec2 point, bool notEquals) const
+std::optional<Vec2> QuadTree::closestDepth(Vec2 point, bool excludePoint) const
 {
     std::optional<Vec2> closest;
-    closestDepth(point, closest, notEquals);
+    closestDepth(point, closest, excludePoint);
     return closest;
 }
 
 /*
     Append in buffer all points in the given rectangle.
 */
-void QuadTree::queryRect(Rect rect, std::vector<Vec2>& buffer) const
+void QuadTree::queryRect(Rect rect, BetterVector<Vec2>& buffer) const
 {
     if (!this->rect.intersects(rect))
         return;
@@ -341,7 +359,7 @@ void QuadTree::queryRect(Rect rect, std::vector<Vec2>& buffer) const
 /*
     Append in buffer all points in the given circle.
 */
-void QuadTree::queryCircle(Vec2 center, float radius, std::vector<Vec2>& buffer) const
+void QuadTree::queryCircle(Vec2 center, float radius, BetterVector<Vec2>& buffer) const
 {
     if (!intersectsCircle(center, radius))
         return;
