@@ -13,8 +13,6 @@ struct Vec2
 
     Vec2(float x, float y);
 
-    Vec2(const Vec2& other);
-
     float normSquared() const;
 
     float norm() const;

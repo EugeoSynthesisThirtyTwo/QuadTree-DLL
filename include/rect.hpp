@@ -11,8 +11,6 @@ struct Rect
 
     Rect(float x, float y, float w, float h);
 
-    Rect(const Rect& other);
-
     bool contains(Vec2 point) const;
     
     Vec2 projection(Vec2 point) const;

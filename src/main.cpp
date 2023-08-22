@@ -13,16 +13,10 @@ struct OptionalVec2
     Vec2 value;
 };
 
-class Point
-{
-public:
-    float x, y;
-};
-
 extern "C" {
-    __declspec(dllexport) void test(Point point)
+    __declspec(dllexport) void test(Vec2 vec)
     {
-        std::cout << "test(" << point.x << ", " << point.y << ")" << std::endl;
+        std::cout << "test(" << vec.x << ", " << vec.y << ")" << std::endl;
     }
 
     DLL_EXPORT CArrayVec2 vectorVec2ToArray(void* vector)

@@ -9,9 +9,6 @@ Vec2::Vec2(float x, float y)
     : x(x), y(y)
 {}
 
-Vec2::Vec2(const Vec2& other)
-{}
-
 float Vec2::normSquared() const
 {
     return x * x + y * y;
