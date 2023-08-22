@@ -7,7 +7,6 @@
 /*
     TODO remove empty
     TODO remove representative
-    TODO dans ma méthode du closest, chercher récursivement en priorité dans les sous régions les plus proche du point
     TODO essayer la disjonction de grégoire
     TODO corriger la méthode en largeur de grégoire
     TODO partager des objets python
