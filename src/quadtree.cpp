@@ -18,16 +18,12 @@ QuadTree::~QuadTree()
 int QuadTree::depth() const
 {
     if (!divided)
-    {
-        std::cout << this << "(" << points.size() << ")" << " -> None" << std::endl;
         return 1;
-    }
 
     int max_depth = 0;
 
     for (const QuadTree* child : childs)
     {
-        std::cout << this << "(" << points.size() << ")" << " -> " << child << std::endl;
         int depth = child->depth();
 
         if (depth > max_depth)
@@ -124,38 +120,27 @@ void QuadTree::merge()
 
 bool QuadTree::insert(Vec2 point)
 {
-    bool inserted = false;
-
     if (!rect.contains(point))
-    {
-        std::cout << rect << ".contains(" << point << ") -> false" << std::endl;
-        return inserted;
-    }
+        return false;
     
     representative = point;
+    empty = false;
 
     if (divided)
     {
         for (QuadTree* child : childs)
         {
             if (child->insert(point))
-            {
-                inserted = true;
-                break;
-            }
+                return true;
         }
     }
-    else
-    {
-        points.emplace_back(point);
-        inserted = true;
 
-        if (points.size() > capacity)
-            subdivide();
-    }
+    points.emplace_back(point);
+
+    if (points.size() > capacity)
+        subdivide();
     
-    empty = false;
-    return inserted;
+    return true;
 }
 
 void QuadTree::suppress(Vec2 point)

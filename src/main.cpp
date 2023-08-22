@@ -13,12 +13,8 @@ struct OptionalVec2
     Vec2 value;
 };
 
-extern "C" {
-    __declspec(dllexport) void test(Vec2 vec)
-    {
-        std::cout << "test(" << vec.x << ", " << vec.y << ")" << std::endl;
-    }
-
+extern "C"
+{
     DLL_EXPORT CArrayVec2 vectorVec2ToArray(void* vector)
     {
         std::vector<Vec2>* vec = static_cast<std::vector<Vec2>*>(vector);
@@ -37,9 +33,7 @@ extern "C" {
     
     DLL_EXPORT void* QTcreate(Rect& rect, int capacity)
     {
-        QuadTree* quadtree = new QuadTree(rect, capacity);
-        std::cout << "QTcreate() quadtree = " << quadtree << std::endl;
-        return quadtree;
+        return new QuadTree(rect, capacity);
     }
 
     DLL_EXPORT void QTfree(void* quadTree)
@@ -86,7 +80,6 @@ extern "C" {
 
     DLL_EXPORT bool QTinsert(void* quadTree, Vec2 point)
     {
-        std::cout << "QTinsert(" << point << ")" << std::endl;
         QuadTree* qt = static_cast<QuadTree*>(quadTree);
         return qt->insert(point);
     }

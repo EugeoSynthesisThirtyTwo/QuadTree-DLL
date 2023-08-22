@@ -131,7 +131,7 @@ class QuadTreeCpp:
     def suppress(self, point: Vec2) -> None:
         self._dll.QTsuppress(self._quadTree, point)
     
-    def naiveClosest(self, point: Vec2, radius: float) -> Vec2 | None:
+    def naive_closest(self, point: Vec2, radius: float) -> Vec2 | None:
         optional = self._dll.QTnaiveClosest(self._quadTree, point, radius)
 
         if optional.has_value:
@@ -147,7 +147,7 @@ class QuadTreeCpp:
         
         return None
     
-    def closestDepth(self, point: Vec2, not_equal: bool = True) -> Vec2 | None:
+    def closest_depth(self, point: Vec2, not_equal: bool = True) -> Vec2 | None:
         optional = self._dll.QTclosestDepth(self._quadTree, point, not_equal)
 
         if optional.has_value:
@@ -155,19 +155,19 @@ class QuadTreeCpp:
         
         return None
     
-    def queryRect(self, rect: Rect) -> list[Vec2]:
+    def query_rect(self, rect: Rect) -> list[Vec2]:
         vector = self._dll.QTqueryRect(self._quadTree, rect)
         c_array = self._dll.vectorVec2ToArray(self, vector)
         python_list = [c_array.array[i] for i in range(c_array.size)]
         self._dll.freeVectorVec2(vector)
         return python_list
     
-    def queryCircle(self, center: Vec2, radius: float) -> list[Vec2]:
+    def query_circle(self, center: Vec2, radius: float) -> list[Vec2]:
         vector = self._dll.QTqueryCircle(self._quadTree, center, radius)
         c_array = self._dll.vectorVec2ToArray(self, vector)
         python_list = [c_array[i] for i in range(c_array.size)]
         self._dll.freeVectorVec2(vector)
         return python_list
     
-    def intersectsCircle(self, center: Vec2, radius: float) -> bool:
+    def intersects_circle(self, center: Vec2, radius: float) -> bool:
         return self._dll.QTintersectsCircle(self._quadTree, center, radius)
