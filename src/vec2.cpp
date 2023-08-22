@@ -64,7 +64,7 @@ Vec2 Vec2::operator/(float coeff) const
     return {x / coeff, y / coeff};
 }
 
-std::optional<Vec2> Vec2::closest(const std::vector<Vec2>& points) const
+std::optional<Vec2> Vec2::closest(const std::vector<Vec2>& points, bool excludeSelf) const
 {
     std::optional<Vec2> closest;
     float closestDistSquared;
@@ -73,6 +73,9 @@ std::optional<Vec2> Vec2::closest(const std::vector<Vec2>& points) const
     {
         float candidateDistSquared = distSquared(candidate);
 
+        if (excludeSelf && *this == candidate)
+            continue;
+        
         if (!closest.has_value() || candidateDistSquared < closestDistSquared)
         {
             closest = candidate;

@@ -9,7 +9,7 @@ class benchmark_context:
     
     def __exit__(self, exc_type, exc_value, exc_traceback):
         t2 = time.time()
-        print(f"{self.title} : {t2 - self.t1} s")
+        print(f"{self.title} : {1000 * (t2 - self.t1)} ms")
 
 def benchmark_decorator(function):
     def wrapper(*args, **kw_args):

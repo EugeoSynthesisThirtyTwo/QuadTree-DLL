@@ -196,7 +196,7 @@ std::optional<Vec2> QuadTree::naiveClosest(Vec2 point, float radius) const
 {
     std::vector<Vec2> candidates;
     queryCircle(point, radius, candidates);
-    return point.closest(candidates);
+    return point.closest(candidates, true);
 }
 
 /*
@@ -212,7 +212,7 @@ std::optional<Vec2> QuadTree::closest(Vec2 point)
 {
     if (!divided)
     {
-        return point.closest(points);
+        return point.closest(points, {});
     }
     
     std::vector<QuadTree*> sqrs;
@@ -236,7 +236,7 @@ std::optional<Vec2> QuadTree::closest(Vec2 point)
                 representatives.emplace_back(*sqr->representative);
         }
 
-        std::optional<Vec2> closestRepresentative = point.closest(representatives);
+        std::optional<Vec2> closestRepresentative = point.closest(representatives, true);
 
         if (closestRepresentative.has_value())
             best = closestRepresentative;
@@ -256,7 +256,7 @@ std::optional<Vec2> QuadTree::closest(Vec2 point)
                     if (!subSqr->divided)
                     {
                         // the representative is changed to the closest :
-                        subSqr->representative = point.closest(subSqr->points);
+                        subSqr->representative = point.closest(subSqr->points, true);
                     }
                 }
             }

@@ -35,7 +35,7 @@ struct Vec2
 
     Vec2 operator/(float coeff) const;
 
-    std::optional<Vec2> closest(const std::vector<Vec2>& points) const;
+    std::optional<Vec2> closest(const std::vector<Vec2>& points, bool excludeSelf) const;
 };
 
 Vec2 operator*(float coeff, Vec2 vec);
