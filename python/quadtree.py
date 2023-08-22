@@ -7,7 +7,8 @@ A quadtree is a spatial tree with the following properties:
 """
 import numpy as np
 
-from constants import QUADTREE_MAX_CAPACITY, OBJECT_RADIUS
+QUADTREE_MAX_CAPACITY = 4
+OBJECT_RADIUS = 0.1
 
 def distance(p1, p2):
     """

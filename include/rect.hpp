@@ -14,6 +14,14 @@ struct Rect
     Rect(const Rect& other);
 
     bool contains(Vec2 point) const;
+    
+    Vec2 projection(Vec2 point) const;
+    
+    float distSquared(Vec2 point) const;
+
+    float dist(Vec2 point) const;
 
     bool intersects(Rect other) const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Rect& rect);
