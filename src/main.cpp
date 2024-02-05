@@ -1,4 +1,6 @@
 #define DLL_EXPORT __declspec(dllexport)
+#include <iostream>
+#include <chrono>
 #include "quadtree.hpp"
 
 struct CArrayVec2
@@ -147,4 +149,70 @@ extern "C"
         const QuadTree* qt = static_cast<const QuadTree*>(quadTree);
         return qt->intersectsCircle(center, radius);
     }
+}
+
+Vec2 randVec()
+{
+    return Vec2{float(std::rand()) / RAND_MAX, float(std::rand()) / RAND_MAX};
+}
+
+int main(int argc, char** argv)
+{
+    int n = 1000000;
+    QuadTree quadTree(Rect(0, 0, 1, 1));
+    std::vector<Vec2> vecs;
+    vecs.reserve(n);
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < n; i++)
+    {
+        Vec2 vec = randVec();
+        vecs.push_back(vec);
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Creation: " << duration.count() / 1000 << " milliseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
+    for (Vec2 vec: vecs)
+    {
+        quadTree.insert(vec);
+    }
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Insertion: " << duration.count() / 1000 << " milliseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
+    for (Vec2 vec: vecs)
+    {
+        std::optional<Vec2> closest = quadTree.naiveClosest(vec);
+        /*if (!closest.has_value())
+            std::cout << "closest is empty" << std::endl;
+        else if (closest.value() != vec)
+            std::cout << "closest(x) != x" << std::endl;*/
+    }
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Naive Closest: " << duration.count() / 1000 << " milliseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
+    for (Vec2 vec: vecs)
+    {
+        quadTree.closest(vec);
+    }
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Closest: " << duration.count() / 1000 << " milliseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
+    for (Vec2 vec: vecs)
+    {
+        quadTree.closestDepth(vec);
+    }
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Closest Depth: " << duration.count() / 1000 << " milliseconds" << std::endl;
+
+
+    return 0;
 }
